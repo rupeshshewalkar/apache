@@ -1,0 +1,45 @@
+RewriteEngine On
+
+#Security examples
+
+#Example Custom error page
+RewriteCond %{REQUEST_FILENAME} !-f [OR]
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .* /errors/404.html [L]
+
+#Example User agent security
+RewriteCond %{HTTP_USER_AGENT} ^Bot.*$ [NC, OR]
+RewriteCond %{HTTP_USER_AGENT} ^Bot/mailto:attackbot@somebadsiet.com [NC, OR]
+RewriteRule .* - [F]
+
+#Example File injection protection
+RewriteCond %{REQUEST_METHOD} GET [NC,OR]
+RewriteCond %{QUERY_STRING} \w=http:// [OR]
+RewriteCond %{QUERY_STRING} \w=(\.\.//?)+ [NC]
+RewriteRule .* - [F]
+
+#Example blocking directories
+RewriteCond %{QUERY_STRING} ^admin\w*$ [NC, OR]
+RewriteCond %{QUERY_STRING} ^admin\w*/index\.(php|html)$ [NC]
+RewriteRule .* - [F]
+
+  or simply
+
+RewriteRule ^admin\w*/$ - [F]
+
+
+#Redirect to HTTPS
+RewriteCond %{SERVER_PORT} !^80$
+RewriteRule ^.*$ https://%{HTTP_HOST}%{REQUEST_URI} [R]
+
+#Allowing attachments of only certain file types
+RewriteCond %{REQUEST_FILENAME} !\.php$ [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^models/brochures/ - [L]
+
+#Reject certain http methods
+RewriteCond %{REQUEST_METHOD} ^(HEAD|TRACE|DELETE|PUT) [NC]
+RewriteRule .* - [F]
+
+
+
