@@ -1,0 +1,80 @@
+#RewriteRule Flags and examples
+
+RewriteEngine On
+
+#[B] - Causes the RewriteRule to escape non-alphanumeric characters prior to the rewrite transformation.
+RewriteRule ^models/data/(.*)$ /data/list.php?value=$1 [B]
+
+#[R] - Causes the Apache server to issue a 302 Redirect back to the client. This will show the redirect URL in the client browser.
+#[L] - Tells mod_rewrite that this is the last rule and disregard any following rules.
+RewriteRule ^models/(.*)$ http://myboats.com/models/${lc:$1}.html [R,L]
+
+#[C] - Chain causes mod_rewrite to build multiple rules together where the output of one rule becomes the input of the next.
+RewriteRule ^models/list/(.*)$ http://myboats.com/models/data/list/$1 [C]
+RewriteRule ^models/data/list/(.*?)\.html$ http://myboats.com/models/data/list/$1.php
+
+#Cookie: CO=Name:Value:Domain[:Lifetime[:Path]]
+[CO=logout:yes:myboats.com:30] - Causes Apache to set a cookie when visiting the domain
+RewriteRule ^index\.php$ - [CO=logout:yes:myboats.com:30]
+
+#[DPI]Discard path information attached to a value so only the value is used
+RewriteRule ^(.*)$ /images/$1 [DPI]
+
+#[E]Set an environment variable. Here we are writing to the access log for requests other then jpg or png images
+[E=VAR:VAL] or [E=!VAR]
+RewriteRule \.(jpg|png)$ - [E=log:1]
+CustomLog logs/access combined env=!log
+
+#[END] Works like [L] but prevents subsequent htaccess parsing
+RewriteRule ^models/data/list/(.*?)\.html$ http://myboats.com/models/data/list/$1.php [END]
+
+#[F] Causes Apache to send a 403 Forbidden status code
+RewriteRule ^admin$ -[F]
+
+#[G] Causes Apache to send a 410 Gone status
+RewriteRule ^models/tide.html$ - [G,NC]
+
+#[H] Causes Apache to specify a handler for certain file extensions
+RewriteRule !\.php$ - [H=application/x-httpd-php]
+
+#[N] Causes Apache to start again from the first rule. Functions like a while loop.
+RewriteRule (.*)/images/(.*) $1/graphics/$2 [N] #This would cause replacements for "images" as long as they are found in the url
+
+#[NC] Causes Apache to ignore case
+RewriteRule ^models/(.*?)\.html$ http://myboats/models/$1.php [NC]
+
+#[NE] Causes Apache to not escape special characters like & or ?
+RewriteRule ^models/(.*)$ http://myboats/models/$1 [NE]
+
+#[PT] Causes Apache to treat the RewriteRule substitution string as a URI instead of a file path (which is the default). The [PT] flag will cause the RewriteRule to recognize the alias used in the substitution string.
+Alias /buttons /var/www/myboats/buttons
+RewriteRule ^models/images/(.+)\.png$ buttons/$1.gif [PT]
+
+#[QSA] Causes Apache to retain a query string if appended to the URL
+RewriteRule ^models/data/(.+) /list/list.php?item=$1 [QSA]
+
+#[QSD] Causes Apache to discard the query string if appended to the URL
+RewriteRule ^models/data/.+ /list/list.php [QSD]
+
+#[R] Causes Apache to redirect the browser.
+RewriteRule ^(.*)$ http://myboats.com [R]
+
+#[C] Causes Apache to skip rules, most commonly used conditionally
+RewriteCond %{REQUEST_FILENAME} !-f # If so, skip the two following RewriteRules
+RewriteRule .? - [S=2]
+RewriteRule (.*\.gif) images.php?$1 # Skipped
+RewriteRule (.*\.html) docs.php?$1 # Skipped
+
+#[T] Causes Apache to set a MIME type for the response
+RewriteRule \.pdf$ - [T=application/pdf]
+
+
+
+
+
+
+
+
+
+
+
