@@ -1,0 +1,229 @@
+1)CoreDumpDirectory /var/tmp
+
+Directory where Apache HTTP Server attempts to switch before dumping core
+------------------------------------------------------------------------------------------------------------------------
+2)ProxyRequests
+This allows or prevents Apache httpd from functioning as a forward proxy server. (Setting ProxyRequests to Off does not disable 
+use of the ProxyPass directive.)In a typical reverse proxy or gateway configuration, this option should be set to Off.
+------------------------------------------------------------------------------------------------------------------------------
+3) Proxyvia
+The ProxyVia directive controls the use of the  Via: HTTP header by the proxy, to control the flow of proxy requests along a chain
+of proxy servers.Set ProxyVia to Off, to prevent another global configuration from overriding this.
+---------------------------------------------------------------------------------------------------------------------------------
+4) TraceEnable 
+Enable/Disable HTTP Trace method 
+----------------------------------------------------------------------------------------------------------------------------------
+5) ExpiresActive 
+Enables the Expires headers for the website.
+----------------------------------------------------------------------------------------------------------------------------------
+6) SSL Stapling 
+is help to client to identify validatity of SSL certificate 
+Instead of making a request to the CA’s server for each certificate verification request, OCSP stapling allows the web server to query 
+the OCSP responder directly at regular intervals and cache the response.
+
+https://www.keycdn.com/support/ocsp-stapling/
+
+-------------------------------------------------------------------------------------------------------------------------------------
+7) StartServers 
+The StartServers directive sets the number of child server processes created on startup.
+For leader, threadpool and worker the default is StartServers 3. For prefork defaults to 5 and for mpmt_os2 to 2.
+-------------------------------------------------------------------------------------------------------------------------------------
+8) ServerLimit 
+Upper limit on configurable number of processes
+--------------------------------------------------------------------------------------------------------------------------------------
+9) WEB CRAWLERS AND BOTS BLACKLISTING CONFIGURATION
+--------------------------------------------------------------------------------------------------------------------------------------
+
+# BLOCK REQUEST WHEN USER-AGENT HEADER IS EMPTY
+SetEnvIfNoCase User-Agent "^$" KEEPOUT=true
+
+# BLOCK REQUEST WHEN USER-AGENT HEADER STARTS WITH SPECIAL CHARS AND NUMBERS
+SetEnvIfNoCase User-Agent "(\<|\>|\'|\$x0E|\%0A|\%0D|\%27|\%3C|\%3E|\%00|\@\$x|\!susie|\_irc|\_works|\+select\+|\+union\+|\&lt;\?|1\,\1\,1\,|3gse|4all|4anyth
+ing|5\.1\;\ xv6875|59\.64\.153\.|85\.17\.|88\.0\.106\.|1Noonbot|1on1searchBot|3D_SEARCH|3DE_SEARCH2|3GSE|50.nu|192.comAgent|360Spider)" KEEPOUT=true
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+10)HEADER ENRICHMENT WHITELISTING CONFIGURATION
+
+-------------------------------------------------------------------------------------------------------------------------------------
+11)# Hardening Section
+
+
+# Allow listed HTTP request methods only
+<LocationMatch "^(.*)">
+  <LimitExcept DELETE GET HEAD OPTIONS POST PUT>
+    Require all denied
+  </LimitExcept>
+</LocationMatch>
+
+# Deny access to "/" on front-end servers
+<Directory "/">
+  Options None
+  Require all denied
+</Directory>
+
+# Deny browser access to log files
+<FilesMatch "^(.*)\.log$">
+  Require all denied
+</FilesMatch>
+
+# Allow access to content on front-end servers (SECURENET)
+<Directory "/opt/SP/apacheas/content/sf">
+  AllowOverride None
+  Options +FollowSymLinks -SymLinksIfOwnerMatch -Indexes -Includes
+  Require all granted
+</Directory>
+----------------------------------------------------------------------------------------------------------------------------------------------
+12)
+############################################
+# Static Content Section
+############################################
+# Serve static content from local servers (do not proxy to back-end)
+ProxyPassMatch "^(.*)\.(css|crl|eot|gif|html|ico|jpe?g|js|json|mp4|png|svg|ttf|woff|xml)$" !
+ProxyPassMatch "^/(getMSISDN|server-status)$" !
+----------------------------------------------------------------------------------------------------------------------------------------------
+13)
+############################################
+# Caching Section
+############################################
+# By default, do not cache
+<LocationMatch "^(?!(.*)\.(css|eot|gif|html|ico|jpe?g|js|json|mp4|png|svg|ttf|woff|xml)$)(.*)">
+  ExpiresDefault "access plus 0 seconds"
+  Header set Cache-Control "no-cache, no-store"
+</LocationMatch>
+
+# Cache static content (css, js) for 5 days
+<LocationMatch "^(.*)\.(css|js)$">
+  ExpiresDefault "access plus 5 days"
+  Header set Cache-Control "max-age=432000, public"
+</LocationMatch>
+
+# Cache fonts and images for 30 days
+<LocationMatch "^(.*)\.(eot|gif|html|ico|jpe?g|json|mp4|png|svg|ttf|woff|xml)$">
+  ExpiresDefault "access plus 30 days"
+  Header set Cache-Control "max-age=2592000, public"
+</LocationMatch>
+----------------------------------------------------------------------------------------------------------------------------------------
+14)
+
+############################################
+# File Compression Section
+############################################
+# Compress content before transmission (only if served from front-end server)
+<FilesMatch "^(?!(.*)\.(gif|ico|jpe?g|mp4|png)$)(.*)">
+  SetOutputFilter DEFLATE
+</FilesMatch>
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+15)
+
+############################################
+# Logging Section
+############################################
+LogLevel warn
+
+LogFormat "%{%F@%T.}t%{msec_frac}t %{opco}e %h %V:%p %>s %D \"%m %U %H\" \"%{User-Agent}i\" %{JSESSIONID}C \"%k %X\"" custom_log
+LogFormat "%{%F@%T.}t%{msec_frac}t %{x-int-opco}i %{x-sdp-msisdn}i %h %V:%p %>s %D \"%r\" \"%{User-Agent}i\" %{JSESSIONID}C \"%k %X\"" internal_troubleshooting
+
+ErrorLog "|/opt/SP/apacheas/current/bin/rotatelogs -l -L /opt/SP/apacheas/logs/sf/httpd_error.log -f -c /opt/SP/apacheas/logs/sf/httpd_error.%Y%m%d 86400"
+---------------------------------------------------------------------------------------------------------------------------------------
+
+16) Multiviews 
+The MultiViews option for the Options directive sets this. I amnot a fan of this option but do not so dislike it as to remove it. For example,
+when the given Options directive is enabled within the %DocumentRoot%directory as shown above, a request for http://www.domain.com/ratecard.html 
+can answered by a file called ratecard.html.bak, or ratecard.bak, ratecard.old, and the like if ratecard.html is missing.
+This may or may not be desirable.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+17) Total number of simultaneous requests
+
+Apache can process is %MaxClients% x %ThreadsPerChild%. So, because the
+default for MaxClients is 8 and the default for ThreadsPerChild is 25, the default
+maximum for simultaneous requests is 200 (that is, 8 times 5)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+18) Apache server looks file outside DocumentRoot
+
+It is possible to have the server look for files in a directory outside the
+DocumentRoot directory. If you want to access some files outside the
+DocumentRoot tree, you can use the Alias directive to create a virtual directory
+name that can point to a physical directory anywhere in your server’s file system.
+---------------------------------------------------------------------------------------------------------------------------------------
+19) Limit and LimitExecpt : used to block HTTP method
+--------------------------------------------------------------------------------------------------------------------------------------
+20) LimitRequestBody : directive enables you to set a limit on the size of the HTTP
+request that Apache will service. The default limit is 0, which means unlimited. You
+can set this limit from 0 to 2147483647 (2GB).
+--------------------------------------------------------------------------------------------------------------------------------------
+21) The LimitRequestFields: directive allows you to limit number of request header
+fields allowed in a single HTTP request. This limit can be 0 to 32767 (32K)
+--------------------------------------------------------------------------------------------------------------------------------------
+22) ListenBacklog 
+The ListenBacklog directive enables you to take defensive action against a known
+security attack called Denial of Service (DOS) by enabling you to set the maximum
+length of the queue of pending connections. Increase this if you detect that you are
+under a TCP SYN flood (DOS) attack; otherwise, you can leave it alone.
+--------------------------------------------------------------------------------------------------------------------------------------
+
+
+Redirect status_code old_url new_ulr 
+
+Status code : 
+Temp : 302
+Permanent : 301
+----------------------------------------------------------------------------------------------------------------------------------------
+
+RewriteRule 
+
+
+-------------------------------------------------------------------------------------------------------------------------------------
+Nginx VS apache
+
+1) Performance wise Ngnix 2.5 times faster than apache for static html page. For dynamic pages both having similar performance 
+2) Operating System Support: Both ha 
+3) Security
+http://www.hostingadvice.com/how-to/nginx-vs-apache/
+------------------------------------------------------------------------------------------------------------------------------------
+
+ScoreBoardFile: File used to store internal server process information.
+# Not all architectures require this.  But if yours does (you'll know because
+# this file will be  created when you run Apache) then you *must* ensure that
+# no two invocations of Apache share the same scoreboard file.
+#
+ScoreBoardFile /opt/apache/logs/httpd.scoreboard
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+RewriteBase /some-folder/
+RewriteRule page1.html page2.html
+
+Notice we didn't need to change anything in the second line, but the base is now `/some-folder/`. Now our rule has the following effect:
+
+
+
+Original URL                                                              Rewritten URL
+http://distilled.net/some-folder/page1.html                      http://distilled.net/some-folder/page2.html
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+RewriteOptions Directive 
+
+RewriteOptions directive is used to specify options that affect the rewriting behavior for a specific rewrite configuration.
+
+This directive can be used only once in a rewrite configuration. 
+Configuration context 
+per-server configurations 
+per-virtual-host configurations 
+per-directory configurations 
+override (htaccess) configurations 
+Syntax
+
+RewriteOptions options 
+
+It requires only one argument. The only acceptable value of options is inherit. By using this option, the specific rewrite configuration inherits the rules, 
+conditions, maps, and logging of the higher scope configuration. For example, the rules, conditions, maps, and logging defined in a server configuration can be inherited by a virtual-server rewrite configuration. For more information about configuration scopes, read the IIS Mod-Rewrite overview.
+In such case, the originally defined rules with the bound conditions are applied first and the inherited ones second. If a map with a specific name is not defined in the original configuration, the inherited one is used. Also, if no logging mechanism is defined in the original configuration, the inherited one is used. 
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
