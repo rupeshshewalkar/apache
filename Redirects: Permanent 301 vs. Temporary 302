@@ -1,0 +1,80 @@
+1.) What are these redirects, what do they do?
+Permanent 301 
+To summarize in a few lines, permanent 301 redirects are just as they sound. They are permanent redirects from an old URL to a new one. These redirects tell the search engines that the old location is to be removed from their index and replaced with the new location. Using 301 redirects is the most search engine friendly way to redirect traffic and engines, and far out weighs that of various JavaScript and Meta refresh redirects.
+Temporary 3021
+Temporary 302 redirects are also as they sound; temporary. Here you are telling the search engines to read and use the content on the new page, but to keep checking the original URL first as it will ultimately be reestablished.
+
+
+2.) Common and Less Common Uses
+There are many special cases where you should stand back and consider which redirect to use. In nearly all situations a permanent 301 will be the answer, but sometimes a 302 just may fit the bill. Here are some examples of when to use each redirect.
+
+A.) Permanent 301 Redirects
+As noted earlier, 301 redirects are by far the most common. When using them you are telling the search engines “do not come back to this location, the page ha1s permanently moved.”
+All three search engines handle 301 redirects the same. If Site A is 301’d to Site B, then Site B will show up in the search results and Site A will ultimately be completely removed.
+Page Deleted or Moved
+Probably the most common use is the moving or deletion of a single page. Let’s say that you are no longer selling a specific product and therefore have no need for its page. Using a 301 redirect to send the spiders to either the next closest product, or to a relevant product list would be of far more value then having your site return a 404 error and sending users to an error page.
+The same goes with pages that are simply moved. While you are probably better off keeping the page where it is, there are many valid reasons why you may need it moved, and in this case a 301 redirect is essential to keep both the search engines, and your site users (who may have bookmarked this old page) happy.
+New Top Level Domain
+If you are thinking about changing your main domain name, don’t do it. If you find that there is just no way around it, and that the change is essential, 301 redirects are your answer.
+By using a 301 redirect to send traffic from your old site to your new site you can help ensure that ranking damage will be minimal. Without a 301 redirect your new site will be a completely from scratch endeavor with years of hard work down the drain and any historic profile that a search engine has created will not be carried over to the new site.
+WWW vs Non-WWW 
+This is now one of the most common uses of a 301 redirect when used in combination with Mod Rewrites. Essentially by using a permanent 301 redirect to send traffic destined to the non www version of your site (site.com) to the www version (www.site.com) you can focus the strength and prevent page rank split, giving your site’s home page (and internal pages) a nice little boost.
+For more information on this specific form of redirect, please see:
+How to 301 Redirect Non-WWW to WWW URL’s.
+Duplicate Pages
+More often than not you will find websites with valid multiple home page URL’s all which serve up the same identical page. This is most common with two versions of the home page such as: www.site.com and www.site.com/index.html.
+The first step is to update all your home page links to ensure that only non-index.html version is referenced. Should you happen to miss any home page links, and to direct these /index.html pages to the right place, adding the 301 redirect will ensure that you are not splitting the page value.
+Old Domains
+If you find yourself with multiple websites and one or more of them are completely outdated, but still relevant and you have no chance of revitalizing it, you may want to consider using a 301 redirect to send traffic and engines to your current site.
+By redirecting all internal pages of the old site to the most relevant internal pages of your new site, you will not only ensure that site visitors reach the proper updated content, but that any pre-existing rankings, link value, and other search engine goodness is transferred over to the new, active website.
+Note: If you find yourself in the unusual situation of having dozens, or even hundreds of old websites, do not 301 all of them at the same time, you could likely be flagged as a spammer and endure penalties or a possible banning. If this is the case, just redirect a few of your sites that happen to have the most to offer in terms of rankings and traffic.
+Rewriting confusing URL strings via Mod Rewrite
+Lets say that you have a site with long confusing URL strings for all internal pages. These days the major search engines do a much better job of indexing these obscure file locations, but it is still in your best interest to redirect them to a friendlier, cleaner URL. To do this you can use Mod Rewrites which utilize 301 redirects to turn this:
+www.site.com/categories/pageid?brand=348H&model=8889KHl&color=554hY
+
+Into this:
+www.site.com/bmw/650/white/
+
+This URL is not only far more friendly to human visitors, it adds a higher level of relevance for the search engines and is easy to index.
+(For the record, no, I do not own a white BMW 650, but who wouldn’t want one?)
+B.) Temporary 302 Redirects
+The practical use of a 302 redirect is really quite limited. In most cases a 301 redirect is the correct choice; however, there are always exceptions. If you find yourself in the position where a 301 redirect just won’t do, here are a few situations where the 302 may be a better choice.
+Temporarily Moving a Page
+This is the main reason this 302 redirect exists, but you have to also ask yourself, have you ever temporarily moved a page? If the time comes where you need to relocate a page on a temporary basis, with the ultimate final destination of the page being at the original location, then you would want to use the 302 redirect.
+Home Page Redirect
+Have you ever visited a websites home page only to find that you have been redirected to some obscure URL string like www.site.com/home/redir/pageinfo?id=23498874&g=34, but in actuality it is still their home page?
+There are many cases where various dynamic sites or content management systems choose to rewrite the home page using some lengthy string of variables. The best fix for this is to use a mod-rewrite to change the messy URL into a simple www.site.com. Sometimes however, mod-rewrites may not work due to various server constraints, in which case, using a 302 redirect may be the answer.
+By redirecting the home page of your site using a 302 redirect to this longer, more obscure URL, you essentially are telling the engines to continue using the shorter, original URL, but index and rank based on the content of the longer version.
+In doing so you will not only clean up the display URL in any search engine rankings, but you will also help retain value from any links pointing into your home page from outside sources, ultimately helping to improve your overall search engine rankings.
+Special Promotions
+Let’s say you have decided to create a special promotion for a product page on your site. You have toyed with the idea of changing the original product page but have decided against it, and instead created a new promotional page.
+While the promotional page is live, use a 302 redirect to temporarily send traffic intended for the product, over to the promotional page, you can then easily remove the 302 redirect once the promotion is over and the original page will come back into play.
+302 Hijack 
+Important Note:We do NOT recommend attempting this, although if you do, you are likely to only harm yourself as this black-hat trick no longer works.
+Not too long ago the spammers did what they are good at and found a way to abuse the system, in this case, the 302 redirect.
+It was possible to use these 302 redirects to hijack rankings and traffic from another unsuspecting site. How did they do it?
+Hackers used the 302 redirects to send the search engines from their domain (Site A) to a page on the target domain, (Site B). Google would see this and the rankings for Site B would be ultimately transferred over to the redirecting page on Site A.
+Spiders were essentially cloaked to see the 302 redirect to the page on Site B, while human visitors, arriving from the newly hijacked rankings, would either see the original page, or be directed to another page residing on Site A.
+
+Because of this vulnerability any 302’s that direct to a different top level domain are now treated as 301 redirects by the search engines. By treating these as 301 redirects it eliminates the usefulness of this technique and solves the hijacking problem – sorry spammers.
+Special Circumstances
+There are always exceptions to every rule and situations which result in the need for a creative solution. In the past we have had a client who found themselves in one of these situations.
+When undergoing a huge redesign, a client of ours was forced to have part of their site hosted on one server, and part on another. The part of the site to be moved also had to be placed at the sub domain www1. This presented the potential problem of a huge ranking loss in the search engines which just was not acceptable.
+The answer was using 302 redirects on all pages which were moved over to the www1 location. Because the sub domain is still a part of the original top level domain, this solution did not risk any possible penalties from the search engines (in regards to the 302 hijack issue), and also did not cause any problems with the effects of the alternative; a 301 redirect. In the end not only were rankings not compromised, the result of the new website actually caused an overall improvement in listings and site traffic.
+This was a circumstance with a number of complicated technical issues I won’t go into, but the end result was success, with much thanks to a few 302 redirects.
+3.) How to Implement: 
+The focus of this article is about understanding the difference between these two redirects and which one is right for you. If you need help on the implementation of these redirects visit our tutorials found at:
+
+How to Redirect an Old Domain to a New Domain
+How to Redirect Non-WWW to WWW URL’s
+4.) How to Check: 
+Not sure if you have implemented your redirects correctly? There is a fast and easy check you can do to find out.
+Let’s say you are redirecting page A to page B. The obvious way to check is to try loading page A and see what comes up in your browser, but, if you have set up the wrong redirect, to the naked eye it may appear that all is correct.
+To ensure that the correct status code is being utilized, use a “header checker” tool, enter the URL for the page to be redirected, and see what comes up. Finding a tool to do this is as simple as searching in Google, but to make things even easier see our HTTP Header Checker tool at StepForth.
+5.) 301 / 302 Redirect Warning
+Be sure to avoid redirecting large numbers of pages all to one location. This practice is commonly used by spammers and could wind up getting your site into some hot water with Google.
+Spammers have been known to create thousands of pages. By generating 1or 2 links to each of these pages, and ensuring that they are spidered and indexed in Google they can then harness the power of redirects to boost site rankings. By taking thousands of pages and redirecting them all to one main page, you would essentially increase the value of the target page and transfer much of the link popularity and boost search engine rankings.
+Google is onto this. If you try this, you will likely end up banned, or at least penalized. That said, there may be legitimate reasons why you would drive multiple pages via 301s to another page on your site. If this is the case, be careful so you do not wind up being flagged as spam.
+6.) Summary
+If your site is in need of a redirect, be sure to use the appropriate one for your situation. Correct use of these redirects can be your best friend when it comes to retaining search engine rankings, and your worst enemy if used incorrectly. There are many situations which may not be covered in this article, but hopefully you now have the information to make an informed decision on which of these two redirects is right for you.
+
